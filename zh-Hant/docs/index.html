@@ -1,2 +1,76 @@
+
 Refresh to Old Website
 <meta http-equiv="Refresh" content="0; url='https://www.hamval.cloudns.be/'" />
+// 假設這是您要分頁的項目列表
+const items = [
+  /* 在這裡填入您的項目數據 */
+  // 例如：
+  // { id: 1, title: '項目 1' },
+  // { id: 2, title: '項目 2' },
+  // ...
+];
+
+const itemsPerPage = 5; // 每頁顯示的項目數
+let currentPage = 1;
+
+function displayItems(page) {
+  const startIndex = (page - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const pageItems = items.slice(startIndex, endIndex);
+
+  // 清空並重新填充項目容器
+  const itemContainer = document.querySelector('.row'); // 假設您的項目在 .row 類中
+  itemContainer.innerHTML = '';
+
+  pageItems.forEach(item => {
+    // 根據您的項目結構創建HTML
+    const itemHTML = `
+      <div class="col-md-4 text-center">
+        <img src="${item.image}" class="mx-auto my-5" alt="${item.title}" height="110" width="110" />
+        <h4>${item.title}</h4>
+        <p>${item.description}</p>
+      </div>
+    `;
+    itemContainer.innerHTML += itemHTML;
+  });
+}
+
+function setupPagination() {
+  const pageCount = Math.ceil(items.length / itemsPerPage);
+  const paginationElement = document.getElementById('pagination');
+  paginationElement.innerHTML = '';
+
+  for (let i = 1; i <= pageCount; i++) {
+    const li = document.createElement('li');
+    li.classList.add('page-item');
+    const a = document.createElement('a');
+    a.href = '#';
+    a.innerText = i;
+    a.classList.add('page-link');
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      currentPage = i;
+      displayItems(currentPage);
+      updateActivePageLink();
+    });
+
+    li.appendChild(a);
+    paginationElement.appendChild(li);
+  }
+}
+
+function updateActivePageLink() {
+  const pageLinks = document.querySelectorAll('.page-link');
+  pageLinks.forEach((link, index) => {
+    if (index + 1 === currentPage) {
+      link.parentElement.classList.add('active');
+    } else {
+      link.parentElement.classList.remove('active');
+    }
+  });
+}
+
+// 初始化分頁
+displayItems(currentPage);
+setupPagination();
+updateActivePageLink();
